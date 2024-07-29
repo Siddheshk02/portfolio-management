@@ -41,3 +41,11 @@ A simplified portfolio management service to manage user portfolios, track asset
 - `GET /portfolios/{id}/assets/{asset_id}`: Get an asset by ID.
 - `PUT /portfolios/{id}/assets/{asset_id}`: Update an asset by ID.
 - `DELETE /portfolios/{id}/assets/{asset_id}`: Delete an asset by ID.
+
+## Example
+
+- `POST /register` or `POST /login` : ```{ "username": "Example", "password": 12345678 }```
+
+- `POST /portfolios` : ```{ "userid": 2, "name": "MyPortfolio" }```
+  
+- `POST /portfolios/{id}/assets` : ```{ "portfolioid": 2, "name": "Mutual-Fund", "value": 1600 }```
