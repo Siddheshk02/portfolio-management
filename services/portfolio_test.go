@@ -6,20 +6,33 @@ import (
 	"github.com/Siddheshk02/portfolio-management/models"
 	"github.com/Siddheshk02/portfolio-management/repositories"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func TestAddPortfolio(t *testing.T) {
 	db, err := setupTestDB()
 	assert.NoError(t, err)
 
-	db.AutoMigrate(&models.User{}, &models.Portfolio{})
+	db.AutoMigrate(&models.User{}, &models.Portfolio{}, &models.Asset{})
+
+	userRepo := repositories.NewUserRepository(db)
+	userService := NewUserService(userRepo)
+
+	err = userService.RegisterUser("Test User", "password")
+	assert.NoError(t, err)
+
+	user, err := userRepo.GetUserByUsername("Test User")
+	assert.NoError(t, err)
+
+	password := "password"
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	userRepo.CreateUser(&models.User{Username: "Test User", Password: string(hashedPassword)})
+
+	_, err = userService.AuthenticateUser("Test User", password)
 
 	portfolioRepo := repositories.NewPortfolioRepository(db)
 	assetRepo := repositories.NewAssetRepository(db)
 	portfolioService := NewPortfolioService(portfolioRepo, assetRepo)
-
-	user := &models.User{Username: "Test User", Password: "password"}
-	db.Create(user)
 
 	err = portfolioService.CreatePortfolio(user.ID, "Test Portfolio")
 	assert.NoError(t, err)
@@ -28,6 +41,10 @@ func TestAddPortfolio(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "Test Portfolio", portfolio.Name)
 	assert.Equal(t, user.ID, portfolio.UserID)
+
+	db.DropTable("portfolios")
+	db.DropTable("users")
+	db.DropTable("assets")
 }
 
 func TestGetTotalValue(t *testing.T) {
@@ -40,10 +57,10 @@ func TestGetTotalValue(t *testing.T) {
 	assetRepo := repositories.NewAssetRepository(db)
 	portfolioService := NewPortfolioService(portfolioRepo, assetRepo)
 
-	user := &models.User{Username: "Test User", Password: "password"}
-	db.Create(user)
+	// user := &models.User{Username: "Test User", Password: "password"}
+	// db.Create(user)
 
-	portfolio := &models.Portfolio{UserID: user.ID, Name: "Test Portfolio"}
+	portfolio := &models.Portfolio{UserID: 1, Name: "Test Portfolio"}
 	db.Create(portfolio)
 
 	asset1 := &models.Asset{PortfolioID: portfolio.ID, Name: "Asset 1", Value: 100}
@@ -66,10 +83,10 @@ func TestCalculateAverageReturn(t *testing.T) {
 	assetRepo := repositories.NewAssetRepository(db)
 	portfolioService := NewPortfolioService(portfolioRepo, assetRepo)
 
-	user := &models.User{Username: "Test User", Password: "password"}
-	db.Create(user)
+	// user := &models.User{Username: "Test User", Password: "password"}
+	// db.Create(user)
 
-	portfolio := &models.Portfolio{UserID: user.ID, Name: "Test Portfolio"}
+	portfolio := &models.Portfolio{UserID: 1, Name: "Test Portfolio"}
 	db.Create(portfolio)
 
 	asset1 := &models.Asset{PortfolioID: portfolio.ID, Name: "Asset 1", Value: 100}
