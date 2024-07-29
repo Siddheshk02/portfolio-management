@@ -18,10 +18,9 @@ import (
 func main() {
 	config.LoadConfig()
 	user := os.Getenv("User")
-	dbname := os.Getenv("DB")
 	pass := os.Getenv("Password")
 
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user="+user+" dbname="+dbname+" password="+pass+" sslmode=disable")
+	db, err := gorm.Open("postgres", "host=localhost port=5432 user="+user+" dbname=portfolio-management password="+pass+" sslmode=disable")
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
