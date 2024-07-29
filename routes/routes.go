@@ -18,8 +18,8 @@ func SetupRoutes(userController *controllers.UserController, portfolioController
 	protected.HandleFunc("/portfolios/{id}", portfolioController.GetPortfolio).Methods("GET")
 	protected.HandleFunc("/portfolios/{id}", portfolioController.UpdatePortfolio).Methods("PUT")
 	protected.HandleFunc("/portfolios/{id}", portfolioController.DeletePortfolio).Methods("DELETE")
-	protected.HandleFunc("/portfolios/{id}", portfolioController.CalculateTotalValue).Methods("GET")
-	protected.HandleFunc("/portfolios/{id}", portfolioController.CalculateAverageReturn).Methods("GET")
+	protected.HandleFunc("/portfolios/{id}/totalvalue", portfolioController.CalculateTotalValue).Methods("GET")
+	protected.HandleFunc("/portfolios/{id}/averagereturn", portfolioController.CalculateAverageReturn).Methods("GET")
 
 	protected.HandleFunc("/portfolios/{id}/assets", assetController.AddAsset).Methods("POST")
 	protected.HandleFunc("/portfolios/{id}/assets/{asset_id}", assetController.GetAsset).Methods("GET")

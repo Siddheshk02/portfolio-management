@@ -67,13 +67,8 @@ func (c *AssetController) GetAsset(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *AssetController) UpdateAsset(w http.ResponseWriter, r *http.Request) {
-	portfolioIDStr := mux.Vars(r)["id"]
 	assetIDStr := mux.Vars(r)["asset_id"]
-	portfolioID, err := strconv.Atoi(portfolioIDStr)
-	if err != nil {
-		http.Error(w, "Invalid portfolio ID", http.StatusBadRequest)
-		return
-	}
+
 	assetID, err := strconv.Atoi(assetIDStr)
 	if err != nil {
 		http.Error(w, "Invalid asset ID", http.StatusBadRequest)
@@ -85,7 +80,6 @@ func (c *AssetController) UpdateAsset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	asset.ID = uint(assetID)
-	asset.PortfolioID = uint(portfolioID)
 	err = c.assetService.UpdateAsset(asset.ID, asset.Name, asset.Value, asset.CreatedAt)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -95,13 +89,7 @@ func (c *AssetController) UpdateAsset(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *AssetController) DeleteAsset(w http.ResponseWriter, r *http.Request) {
-	// portfolioIDStr := mux.Vars(r)["id"]
 	assetIDStr := mux.Vars(r)["asset_id"]
-	// portfolioID, err := strconv.Atoi(portfolioIDStr)
-	// if err != nil {
-	// 	http.Error(w, "Invalid portfolio ID", http.StatusBadRequest)
-	// 	return
-	// }
 	assetID, err := strconv.Atoi(assetIDStr)
 	if err != nil {
 		http.Error(w, "Invalid asset ID", http.StatusBadRequest)
